@@ -1,4 +1,5 @@
 # Replace negative values with NA as these are assumed to be missing
+library(lubridate)
 
 replaceMissingCodes <- function(pheno)
 {
@@ -25,6 +26,10 @@ replaceNaN <- function(pheno)
         phenoReplaced[nanStr] <- NA 
         emptyx <- which(phenoReplaced == "")
         phenoReplaced[emptyx] <- NA
+    } else if (is.Date(pheno)) {
+      	 # Block added to fix x53_0_0
+	 # Cannot compare date to str
+         phenoReplaced <- pheno
     } else {
         phenoReplaced <- pheno
         nanx <- which(is.nan(phenoReplaced))
