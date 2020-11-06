@@ -18,6 +18,7 @@
 
 library("optparse")
 library("data.table")
+library(arrow)
 
 option_list <- list(
   make_option(c("-f", "--phenofile"), type="character", default=NULL,
@@ -67,8 +68,8 @@ opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 varlogfile <- paste(opt$resDir, '/', opt$out, '.', opt$partIdx, '.log', sep='')
-outputfile <- paste(opt$resDir, '/', opt$out, '.', opt$partIdx, '.tsv', sep='')
-
+#outputfile <- paste(opt$resDir, '/', opt$out, '.', opt$partIdx, '.tsv', sep='')
+outputfile <- paste(opt$resDir, '/', opt$out, '.parquet', sep='')
 source("processArgs.r")
 opt <<- opt
 print(opt)
@@ -190,7 +191,8 @@ colnames(data_to_store) <- data_to_store_var
 data_to_store <- cbind.data.frame(data[opt$userId], confounders, data_to_store)
 colnames(data_to_store)[1] <- "userId"
 
-fwrite(data_to_store, sep='\t', quote=TRUE, row.names=FALSE, file=outputfile)
+#fwrite(data_to_store, sep='\t', quote=TRUE, row.names=FALSE, file=outputfile)
+write_parquet(data_to_store, outputfile)
 
 # Save counters of each path in variable flow
 saveCounts()
